@@ -19,7 +19,7 @@ MakeZip() {
     fi
     cp -af $MainPath/out/arch/arm64/boot/Image.gz-dtb $Any
     sed -i "s/kernel.string=.*/kernel.string=$KERNEL_NAME-$HeadCommit test by $KBUILD_BUILD_USER/g" anykernel.sh
-    zip -r9 $MainPath/"$ZIP_KERNEL_VERSION-$KERNEL_NAME-$Compiler-$TIME.zip" * -x .git README.md *placeholder
+    zip -r9 $MainPath/"$KERNEL_NAME-$Compiler-$TIME.zip" * -x .git README.md *placeholder
     cd $MainPath
 }
 
@@ -35,7 +35,7 @@ ZIP_KERNEL_VERSION="4.14.$(cat "$MainPath/Makefile" | grep "SUBLEVEL =" | sed 's
 TIME=$(date +"%m%d%H%M")
 
 # Start building
-Compiler=begonia
+Compiler=DexterNoobClang
 MAKE="./makeparallel"
 rm -rf out
 BUILD_START=$(date +"%s")
