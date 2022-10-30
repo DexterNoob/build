@@ -29,6 +29,8 @@ export ARCH="arm64"
 export SUBARCH="arm64"
 export KBUILD_BUILD_USER="TeraaBytee"
 export KBUILD_BUILD_HOST="GithubServer"
+CORES="$(nproc)"
+CPU="$(lscpu | sed -nr '/Model name/ s/.*:\s*(.*) */\1/p')"
 Defconfig="begonia_user_defconfig"
 KERNEL_NAME=$(cat "$MainPath/arch/arm64/configs/$Defconfig" | grep "CONFIG_LOCALVERSION=" | sed 's/CONFIG_LOCALVERSION="-*//g' | sed 's/"*//g' )
 ZIP_KERNEL_VERSION="4.14.$(cat "$MainPath/Makefile" | grep "SUBLEVEL =" | sed 's/SUBLEVEL = *//g')$(cat "$(pwd)/Makefile" | grep "EXTRAVERSION =" | sed 's/EXTRAVERSION = *//g')"
@@ -41,7 +43,7 @@ rm -rf out
 BUILD_START=$(date +"%s")
 
 make  -j$(nproc --all)  O=out ARCH=arm64 SUBARCH=arm64 $Defconfig
-make  -j$(nproc --all)  O=out \
+make  -j$(nproc --all)  "$CORES" O=out \
                         PATH="$dexter/bin:/usr/bin:$PATH" \
                         CC=clang \
                         AS=llvm-as \
