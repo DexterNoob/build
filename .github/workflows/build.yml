@@ -1,0 +1,23 @@
+name: Building Kernel
+
+on: 
+  workflow_dispatch:
+
+jobs:
+  build:
+
+    runs-on: ubuntu-22.04
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Start Build
+      env:
+        TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+        TELEGRAM_CHAT: ${{ secrets.TELEGRAM_CHAT }}
+        KBRANCH: ${{ secrets.KBRANCH }}
+        GIT_TOKEN: ${{ secrets.GIT_TOKEN }}
+        TC: ${{ secrets.TC }}
+      run: |
+        sudo apt update && sudo apt upgrade -y && sudo apt install python2 -y
+        wget https://raw.githubusercontent.com/DexterNoob/script/main/dexter16.sh
+        bash dexter16.sh ${KBRANCH}
