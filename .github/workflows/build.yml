@@ -1,23 +1,81 @@
-name: Building Kernel
+name: Building kernel
 
-on: 
+on: # [push]
+#  release:
+#    types: [published]
+#  push:
+#    branches:
+#      - master
+#    paths:
+#      - '.config'
+#  schedule:
+#    - cron: 0 8 * * 5
+# Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
+  watch:
+    types: [started]
+
+env:
+  BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
+  CHAT_ID: ${{ secrets.CHAT_ID }}
+  TZ: Asia/Jakarta
 
 jobs:
   build:
-
     runs-on: ubuntu-22.04
 
     steps:
-    - uses: actions/checkout@v3
-    - name: Start Build
-      env:
-        TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
-        TELEGRAM_CHAT: ${{ secrets.TELEGRAM_CHAT }}
-        KBRANCH: ${{ secrets.KBRANCH }}
-        GIT_TOKEN: ${{ secrets.GIT_TOKEN }}
-        TC: ${{ secrets.TC }}
-      run: |
-        sudo apt update && sudo apt upgrade -y && sudo apt install python2 -y
-        wget https://raw.githubusercontent.com/DexterNoob/script/main/dexter16.sh
-        bash dexter16.sh ${KBRANCH}
+        - name: Checkout
+          uses: actions/checkout@master
+
+        - name: Initializing environment
+          run: |
+            curl -X POST "https://api.telegram.org/bot$BOT_TOKEN/sendMessage" \
+            -d chat_id="$CHAT_ID" \
+            -d "disable_web_page_preview=true" \
+            -d "parse_mode=html" \
+            -d text="Initializing environment for compiling kernel"
+            sudo apt-get update
+            sudo apt-get install git gcc clang make libssl-dev zip libc6-dev curl lld llvm -y
+        - name: Clone source kernel
+          run: |
+            curl -X POST "https://api.telegram.org/bot$BOT_TOKEN/sendMessage" \
+            -d chat_id="$CHAT_ID" \
+            -d "disable_web_page_preview=true" \
+            -d "parse_mode=html" \
+            -d text="Clone source kernel"
+            git clone --depth=1 https://github.com/noobbeast/kernel.git -b r-test2 begonia
+        - name: Clone compiler
+          run: |
+            curl -X POST "https://api.telegram.org/bot$BOT_TOKEN/sendMessage" \
+            -d chat_id="$CHAT_ID" \
+            -d "disable_web_page_preview=true" \
+            -d "parse_mode=html" \
+            -d text="Clone compiler"
+            sudo bash clone_dexter.sh
+        - name: Run scripts
+          run: |
+            cd begonia
+            curl -s -X POST "https://api.telegram.org/bot$BOT_TOKEN/sendMessage" \
+            -d chat_id="$CHAT_ID" \
+            -d "disable_web_page_preview=true" \
+            -d "parse_mode=html" \
+            -d text="<b>Device</b>: <code>Redmi Note 8 Pro [BEGONIA]</code>%0A<b>Branch</b>: <code>$(git branch | grep "*" | awk '{ print $2 }')</code>%0A<b>Kernel name</b>: <code>$(cat "arch/arm64/configs/begonia_user_defconfig" | grep "CONFIG_LOCALVERSION=" | sed 's/CONFIG_LOCALVERSION="-*//g' | sed 's/"*//g' )</code>%0A<b>Kernel version</b>: <code>4.14.$(cat "Makefile" | grep "SUBLEVEL =" | sed 's/SUBLEVEL = *//g')</code>%0A<b>Build user</b>: <code>noobeast</code>%0A<b>Build host</b>: <code>GithubServer</code>%0A<b>Compiler</b>:%0A<code>$(../dexter/bin/clang --version | grep clang)</code>%0A<b>Changelogs</b>:%0A<code>$(git log --oneline -5 --no-decorate)</code>"
+            sudo bash ../dexter16.sh
+        - name: Upload
+          run: |
+            cd begonia
+            ZIP=$(echo *.zip)
+            if [ -e $ZIP ]; then
+                curl -F chat_id="$CHAT_ID" \
+                -F document=@"$ZIP" \
+                -F parse_mode=markdown https://api.telegram.org/bot$BOT_TOKEN/sendDocument \
+                -F caption="$(cat TIME) @noobbeast"
+            else
+                curl -F chat_id="$CHAT_ID" \
+                -F document=@"out/error.log" \
+                -F parse_mode=markdown https://api.telegram.org/bot$BOT_TOKEN/sendDocument \
+                -F caption="$(cat TIME) @noobbeast"
+            fi
+
+
