@@ -1,4 +1,4 @@
-name: Building kernel
+name: Building LTO
 
 on: # [push]
 #  release:
