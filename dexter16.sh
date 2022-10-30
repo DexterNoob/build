@@ -42,7 +42,7 @@ BUILD_START=$(date +"%s")
 
 make  -j$(nproc --all)  O=out ARCH=arm64 SUBARCH=arm64 $Defconfig
 make  -j$(nproc --all)  O=out \
-                        PATH="$proton/bin:/usr/bin:$PATH" \
+                        PATH="$dexter/bin:/usr/bin:$PATH" \
                         CC=clang \
                         AS=llvm-as \
                         NM=llvm-nm \
