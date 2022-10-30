@@ -1,4 +1,4 @@
-name: Building kernel
+name: Building ThinLTO
 
 on: # [push]
 #  release:
