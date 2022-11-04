@@ -1,4 +1,4 @@
-name: Building ThinLTO
+name: Building DTC
 
 on: # [push]
 #  release:
@@ -56,7 +56,7 @@ jobs:
             -d "disable_web_page_preview=true" \
             -d "parse_mode=html" \
             -d text="Clone compiler"
-            sudo bash clone_dexter.sh
+            sudo bash clone_dtc.sh
         - name: Run scripts
           run: |
             cd begonia
@@ -64,8 +64,8 @@ jobs:
             -d chat_id="$CHAT_ID" \
             -d "disable_web_page_preview=true" \
             -d "parse_mode=html" \
-            -d text="<b>Device</b>: <code>Redmi Note 8 Pro [BEGONIA]</code>%0A<b>Branch</b>: <code>$(git branch | grep "*" | awk '{ print $2 }')</code>%0A<b>Kernel name</b>: <code>$(cat "arch/arm64/configs/begonia_user_defconfig" | grep "CONFIG_LOCALVERSION=" | sed 's/CONFIG_LOCALVERSION="-*//g' | sed 's/"*//g' )</code>%0A<b>Kernel version</b>: <code>4.14.$(cat "Makefile" | grep "SUBLEVEL =" | sed 's/SUBLEVEL = *//g')</code>%0A<b>Build user</b>: <code>noobeast</code>%0A<b>Build host</b>: <code>Github-Action</code>%0A<b>Compiler</b>:%0A<code>$(../dexter/bin/clang --version | grep clang)</code>%0A<b>Changelogs</b>:%0A<code>$(git log --oneline -5 --no-decorate)</code>"
-            sudo bash ../dexter16.sh
+            -d text="<b>Device</b>: <code>Redmi Note 8 Pro [BEGONIA]</code>%0A<b>Branch</b>: <code>$(git branch | grep "*" | awk '{ print $2 }')</code>%0A<b>Kernel name</b>: <code>$(cat "arch/arm64/configs/begonia_user_defconfig" | grep "CONFIG_LOCALVERSION=" | sed 's/CONFIG_LOCALVERSION="-*//g' | sed 's/"*//g' )</code>%0A<b>Kernel version</b>: <code>4.14.$(cat "Makefile" | grep "SUBLEVEL =" | sed 's/SUBLEVEL = *//g')</code>%0A<b>Build user</b>: <code>noobbeast</code>%0A<b>Build host</b>: <code>GithubServer</code>%0A<b>Compiler</b>:%0A<code>$(../DragonTC/bin/clang --version | grep clang)</code>%0A<b>Changelogs</b>:%0A<code>$(git log --oneline -5 --no-decorate)</code>"
+            sudo bash ../dtc.sh
         - name: Upload
           run: |
             cd begonia
