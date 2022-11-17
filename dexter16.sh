@@ -35,7 +35,7 @@ ZIP_KERNEL_VERSION="4.14.$(cat "$MainPath/Makefile" | grep "SUBLEVEL =" | sed 's
 TIME=$(date +"%m%d%H%M")
 
 # Start building
-Compiler=Begonia-Clang-Thin
+Compiler=Begonia-Clang16-LTO
 MAKE="./makeparallel"
 rm -rf out
 BUILD_START=$(date +"%s")
