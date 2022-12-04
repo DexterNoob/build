@@ -40,7 +40,8 @@ jobs:
             -d "parse_mode=html" \
             -d text="Initializing environment for compiling kernel"
             sudo apt-get update
-            sudo apt-get install git gcc clang make libssl-dev zip libc6-dev curl lld llvm -y
+            sudo apt-get install git gcc clang make libssl-dev zip libc6-dev curl lld llvm -y && sudo apt install python2 -y
+
         - name: Clone source kernel
           run: |
             curl -X POST "https://api.telegram.org/bot$BOT_TOKEN/sendMessage" \
