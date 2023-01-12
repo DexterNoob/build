@@ -8,14 +8,14 @@ Any="$(pwd)/../AnyKernel3"
 # Make flashable zip
 MakeZip() {
     if [ ! -d $Any ]; then
-        git clone https://github.com/noobbeast/AnyKernel3.git -b master $Any
+        git clone https://github.com/DexterNoob/AnyKernel3 -b r $Any
         cd $Any
     else
         cd $Any
         git reset --hard
-        git checkout master
-        git fetch origin master
-        git reset --hard origin/master
+        git checkout r
+        git fetch origin r
+        git reset --hard origin/r
     fi
     cp -af $MainPath/out/arch/arm64/boot/Image.gz-dtb $Any
     sed -i "s/kernel.string=.*/kernel.string=$KERNEL_NAME-$HeadCommit test by $KBUILD_BUILD_USER/g" anykernel.sh
